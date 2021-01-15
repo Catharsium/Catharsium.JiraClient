@@ -8,14 +8,16 @@ namespace Catharsium.JiraClient.Terminal.ActionHandlers
 {
     public class ListActionHandler : IActionHandler
     {
+        private readonly Jira jira;
         private readonly IConsole console;
         private readonly JiraTerminalSettings settings;
 
         public string FriendlyName => "List";
 
 
-        public ListActionHandler(IConsole console, JiraTerminalSettings settings)
+        public ListActionHandler(Jira jira, IConsole console, JiraTerminalSettings settings)
         {
+            this.jira = jira;
             this.console = console;
             this.settings = settings;
         }
@@ -23,8 +25,7 @@ namespace Catharsium.JiraClient.Terminal.ActionHandlers
 
         public async Task Run()
         {
-            var jira = Jira.CreateRestClient(this.settings.JiraServerUrl, this.settings.Credentials.Username, this.settings.Credentials.Password);
-            var issues = from i in jira.Issues.Queryable
+            var issues = from i in this.jira.Issues.Queryable
                          where i.Assignee == this.settings.Credentials.Username
                          orderby i.Created descending
                          select i;

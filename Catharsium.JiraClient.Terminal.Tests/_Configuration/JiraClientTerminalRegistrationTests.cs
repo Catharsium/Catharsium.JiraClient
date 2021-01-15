@@ -22,6 +22,7 @@ namespace Catharsium.JiraClient.Terminal.Tests._Configuration
 
             serviceCollection.ReceivedRegistration<IActionHandler, ListActionHandler>();
             serviceCollection.ReceivedRegistration<IActionHandler, WorklogActionHandler>();
+            serviceCollection.ReceivedRegistration<IActionHandler, SubTasksActionHandler>();
         }
     }
 }
