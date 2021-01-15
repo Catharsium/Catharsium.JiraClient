@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace Catharsium.JiraClient.Terminal.ActionHandlers
 {
-    public class SubTasksActionHandler : IActionHandler
+    public class DefaultSubTasksActionHandler : IActionHandler
     {
         private readonly Jira jira;
         private readonly IConsole console;
         private readonly JiraTerminalSettings settings;
 
-        public string FriendlyName => "SubTasks";
+        public string FriendlyName => "Default subtasks";
 
 
-        public SubTasksActionHandler(Jira jira, IConsole console, JiraTerminalSettings settings)
+        public DefaultSubTasksActionHandler(Jira jira, IConsole console, JiraTerminalSettings settings)
         {
             this.jira = jira;
             this.console = console;
@@ -30,19 +30,13 @@ namespace Catharsium.JiraClient.Terminal.ActionHandlers
                 return;
             }
 
-            while (true)
+            foreach (var subtask in this.settings.DefaultSubTasks)
             {
-                var issueSummary = this.console.AskForText("Enter the summary:");
-                if (string.IsNullOrWhiteSpace(issueSummary))
-                {
-                    return;
-                }
-
                 var issue = this.jira.CreateIssue(this.settings.DefaultProjectKey, $"{this.settings.DefaultProjectKey}-{issueKey}");
                 issue.Type = "5";
-                issue.Summary = issueSummary;
+                issue.Summary = subtask.Summary;
                 await issue.SaveChangesAsync();
-                this.console.WriteLine($"Created {issue.Key}");
+                this.console.WriteLine($"Created {issue.Key} ({issue.Summary})");
             }
         }
     }

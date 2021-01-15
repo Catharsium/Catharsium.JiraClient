@@ -16,9 +16,11 @@ namespace Catharsium.JiraClient.Terminal._Configuration
             services.AddSingleton<JiraTerminalSettings, JiraTerminalSettings>(_ => settings);
 
             services.AddConsoleIoUtilities(configuration);
+
             services.AddScoped<IActionHandler, ListActionHandler>();
             services.AddScoped<IActionHandler, WorklogActionHandler>();
             services.AddScoped<IActionHandler, SubTasksActionHandler>();
+            services.AddScoped<IActionHandler, DefaultSubTasksActionHandler>();
 
             services.AddScoped(s => Jira.CreateRestClient(settings.JiraServerUrl, settings.Credentials.Username, settings.Credentials.Password));
 

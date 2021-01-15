@@ -19,10 +19,21 @@ namespace Catharsium.JiraClient.Terminal.Tests._Configuration
             var configuration = Substitute.For<IConfiguration>();
 
             serviceCollection.AddJiraClientTerminal(configuration);
-
             serviceCollection.ReceivedRegistration<IActionHandler, ListActionHandler>();
             serviceCollection.ReceivedRegistration<IActionHandler, WorklogActionHandler>();
             serviceCollection.ReceivedRegistration<IActionHandler, SubTasksActionHandler>();
+            serviceCollection.ReceivedRegistration<IActionHandler, DefaultSubTasksActionHandler>();
+        }
+
+
+        [TestMethod]
+        public void AddJiraClientTerminal_RegistersPackages()
+        {
+            var serviceCollection = Substitute.For<IServiceCollection>();
+            var configuration = Substitute.For<IConfiguration>();
+
+            serviceCollection.AddJiraClientTerminal(configuration);
+            serviceCollection.ReceivedRegistration<IConsole>();
         }
     }
 }
