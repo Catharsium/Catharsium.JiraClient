@@ -1,4 +1,5 @@
-﻿using Catharsium.JiraClient.Terminal.ActionHandlers;
+﻿using Atlassian.Jira;
+using Catharsium.JiraClient.Terminal.ActionHandlers;
 using Catharsium.Util.Configuration.Extensions;
 using Catharsium.Util.IO.Console._Configuration;
 using Catharsium.Util.IO.Console.Interfaces;
@@ -9,13 +10,16 @@ namespace Catharsium.JiraClient.Terminal._Configuration
 {
     public static class JiraTerminalRegistration
     {
-        public static IServiceCollection AddJiraTerminal(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJiraClientTerminal(this IServiceCollection services, IConfiguration configuration)
         {
-            var trelloCoreConfiguration = configuration.Load<JiraTerminalSettings>();
-            services.AddSingleton<JiraTerminalSettings, JiraTerminalSettings>(_ => trelloCoreConfiguration);
+            var settings = configuration.Load<JiraTerminalSettings>();
+            services.AddSingleton<JiraTerminalSettings, JiraTerminalSettings>(_ => settings);
 
             services.AddConsoleIoUtilities(configuration);
-            services.AddScoped<IActionHandler, DemoActionHandler>();
+            services.AddScoped<IActionHandler, ListActionHandler>();
+            services.AddScoped<IActionHandler, WorklogActionHandler>();
+
+            services.AddScoped(s => Jira.CreateRestClient(settings.JiraServerUrl, settings.Credentials.Username, settings.Credentials.Password));
 
             return services;
         }

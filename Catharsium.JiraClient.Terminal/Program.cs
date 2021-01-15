@@ -1,4 +1,5 @@
 ﻿using Catharsium.JiraClient.Terminal._Configuration;
+using Catharsium.JiraClient.Terminal.ActionHandlers;
 using Catharsium.Util.IO.Console.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,9 +18,15 @@ namespace Catharsium.JiraClient.Terminal
             var configuration = builder.Build();
 
             var serviceCollection = new ServiceCollection()
-                .AddJiraTerminal(configuration);
+                .AddJiraClientTerminal(configuration);
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            var settings = serviceProvider.GetService<JiraTerminalSettings>();
+            if (settings.Credentials == null)
+            {
+                await new CredentialsActionHandler(serviceProvider.GetService<IConsole>(), settings).Run();
+            }
 
             var chooseOperationActionHandler = serviceProvider.GetService<IChooseActionHandler>();
             await chooseOperationActionHandler.Run();

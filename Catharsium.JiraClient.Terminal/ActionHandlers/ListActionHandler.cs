@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Catharsium.JiraClient.Terminal.ActionHandlers
 {
-    public class DemoActionHandler : IActionHandler
+    public class ListActionHandler : IActionHandler
     {
         private readonly IConsole console;
         private readonly JiraTerminalSettings settings;
 
-        public string FriendlyName => "Demo";
+        public string FriendlyName => "List";
 
 
-        public DemoActionHandler(IConsole console, JiraTerminalSettings settings)
+        public ListActionHandler(IConsole console, JiraTerminalSettings settings)
         {
             this.console = console;
             this.settings = settings;
@@ -23,7 +23,6 @@ namespace Catharsium.JiraClient.Terminal.ActionHandlers
 
         public async Task Run()
         {
-            await new CredentialsActionHandler(this.console, this.settings).Run();
             var jira = Jira.CreateRestClient(this.settings.JiraServerUrl, this.settings.Credentials.Username, this.settings.Credentials.Password);
             var issues = from i in jira.Issues.Queryable
                          where i.Assignee == this.settings.Credentials.Username
